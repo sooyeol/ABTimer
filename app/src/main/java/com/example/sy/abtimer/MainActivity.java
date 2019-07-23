@@ -5,9 +5,9 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.media.AudioAttributes;
-import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
@@ -16,6 +16,8 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -39,6 +41,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALL);
 
+    SharedPreferences sharedPreferences;
+
+
+    private void saveData(String key, long value){
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putLong(key, value);
+        editor.apply();
+    }
+
+    private void setUpListener(EditText text, final String name) {
+        text.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                long value = 0;
+                if (s.length() != 0) {
+                    value = Long.parseLong(s.toString());
+                }
+                saveData(name, value);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +78,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         timeA = findViewById(R.id.timeA);
+        setUpListener(timeA, "timeA");
+
         timeB = findViewById(R.id.timeB);
+        setUpListener(timeB, "timeB");
 
         buttonA = findViewById(R.id.buttonA);
         buttonB = findViewById(R.id.buttonB);
@@ -74,6 +109,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         notificationManagerCompat = NotificationManagerCompat.from(this);
 //        notificationManagerCompat.notify(0, builder.build());
+
+        sharedPreferences = getPreferences(MODE_PRIVATE);
+        loadSavedData();
+    }
+
+    private void loadSavedData() {
+        long timeAData = sharedPreferences.getLong("timeA",0);
+        long timeBData = sharedPreferences.getLong("timeB",0);
+
+        timeA.setText(String.format(Locale.US, "%d", timeAData));
+        timeB.setText(String.format(Locale.US, "%d", timeBData));
     }
 
     private void createNotifcationChannel() {
