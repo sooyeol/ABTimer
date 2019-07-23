@@ -5,6 +5,11 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.graphics.Color;
+import android.media.AudioAttributes;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
@@ -27,6 +32,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button buttonA;
     Button buttonB;
 
+    NotificationManagerCompat notificationManagerCompat;
+
+    Intent intent;
+    NotificationCompat.Builder builder;
+
+    Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALL);
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,20 +56,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         createNotifcationChannel();
 
-        Intent intent = new Intent(this, this.getClass());
+        intent = new Intent(this, this.getClass());
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, getString(R.string.MainChannel))
+        builder = new NotificationCompat.Builder(this, getString(R.string.MainChannel))
                 .setSmallIcon(R.drawable.ic_notification)
-                .setContentTitle("a")
-                .setContentText("content")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setContentIntent(pendingIntent);
+                .setContentTitle("ABTimer")
+//                .setContentText("content")
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setContentIntent(pendingIntent)
+                .setCategory(NotificationCompat.CATEGORY_ALARM)
+                .setSound(alarmSound)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                .setLights(Color.GRAY,200, 200)
+                .setAutoCancel(true);
 
-        NotificationManagerCompat notificationManagerCompat;
         notificationManagerCompat = NotificationManagerCompat.from(this);
-        notificationManagerCompat.notify(0, builder.build());
+//        notificationManagerCompat.notify(0, builder.build());
     }
 
     private void createNotifcationChannel() {
@@ -65,18 +82,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = getString(R.string.MainChannel);
             String description = getString(R.string.MainChannel);
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+
+            AudioAttributes attributes = new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                    .build();
+
             NotificationChannel channel = new NotificationChannel(getString(R.string.MainChannel), name, importance);
             channel.setDescription(description);
+            channel.enableLights(true);
+            channel.setLightColor(Color.GRAY);
+            channel.enableVibration(true);
+            channel.setSound(alarmSound, attributes);
+            channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
             // Register the channel with the system; you can't change the importance
             // or other notification behaviors after this
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
-    }
-
-    // notificationId is a unique int for each notification that you must define
-    void createNotification() {
     }
 
     Handler timerHandlerA = new Handler();
@@ -96,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 timeA.setText(String.format(Locale.US, "%d", 0));
                 buttonA.setText(getText(R.string.Done));
 
-                createNotification();
+                notificationManagerCompat.notify(0, builder.build());
             }
         }
     };
@@ -118,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 timeB.setText(String.format(Locale.US, "%d", 0));
                 buttonB.setText(getText(R.string.Done));
 
-                createNotification();
+                notificationManagerCompat.notify(0, builder.build());
             }
         }
     };
