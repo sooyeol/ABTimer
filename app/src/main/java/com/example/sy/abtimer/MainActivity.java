@@ -17,6 +17,7 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
@@ -218,6 +219,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             buttonA.setText(getString(R.string.ARunning));
 
             startTimerA();
+
+            timeA.setEnabled(false);
+            timeB.setEnabled(false);
+            timeA.setInputType(InputType.TYPE_NULL);
+            timeB.setInputType(InputType.TYPE_NULL);
+
         } else if (buttonA.getText().equals(getText(R.string.ADone))) {
             timeA.setText(String.format(Locale.US, "%d", initialTimeA));
             buttonA.setText(getString(R.string.BRunning));
@@ -230,6 +237,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void onButtonBClick() {
+        timeA.setEnabled(true);
+        timeB.setEnabled(true);
+        timeA.setInputType(InputType.TYPE_CLASS_DATETIME);
+        timeB.setInputType(InputType.TYPE_CLASS_DATETIME);
+
         timeA.setText(String.format(Locale.US, "%d", initialTimeA));
         timeB.setText(String.format(Locale.US, "%d", initialTimeB));
         buttonA.setText(getString(R.string.Start));
