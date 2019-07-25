@@ -193,12 +193,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     };
 
     private void startTimerA() {
-        buttonA.setText(getString(R.string.Reset));
         timerRunnableA.run();
     }
 
     private void startTimerB() {
-        buttonB.setText(getString(R.string.Reset));
         timerRunnableB.run();
     }
 
@@ -217,6 +215,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             initialTimeA = Integer.parseInt(timeA.getText().toString());
             initialTimeB = Integer.parseInt(timeB.getText().toString());
 
+            buttonA.setText(getString(R.string.Reset));
+
             startTimerA();
         } else if (buttonA.getText().equals(getText(R.string.Reset))) {
             buttonA.setText(getString(R.string.Start));
@@ -233,6 +233,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             initialTimeA = Integer.parseInt(timeA.getText().toString());
             initialTimeB = Integer.parseInt(timeB.getText().toString());
 
+            buttonB.setText(getString(R.string.Reset));
             startTimerB();
         } else if (buttonB.getText().equals(getText(R.string.Reset))) {
             buttonB.setText(getString(R.string.Start));
