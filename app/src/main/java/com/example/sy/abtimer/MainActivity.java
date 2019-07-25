@@ -59,11 +59,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                long value = 0;
-                if (s.length() != 0) {
-                    value = Long.parseLong(s.toString());
-                }
-                saveData(name, value);
+
             }
 
             @Override
@@ -79,10 +75,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         timeA = findViewById(R.id.timeA);
-        setUpListener(timeA, "timeA");
+//        setUpListener(timeA, "timeA");
 
         timeB = findViewById(R.id.timeB);
-        setUpListener(timeB, "timeB");
+//        setUpListener(timeB, "timeB");
 
         buttonA = findViewById(R.id.buttonA);
         buttonB = findViewById(R.id.buttonB);
@@ -212,6 +208,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void onButtonAClick() {
+        saveData("timeA", initialTimeA);
+        saveData("timeB", initialTimeB);
+
         if (buttonA.getText().equals(getText(R.string.Start))
                 && timeA.getText().length() > 0
                 && timeB.getText().length() > 0) {
