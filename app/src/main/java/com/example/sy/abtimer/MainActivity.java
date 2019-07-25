@@ -212,7 +212,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void onButtonAClick() {
-        if (buttonA.getText().equals(getText(R.string.Start))) {
+        if (buttonA.getText().equals(getText(R.string.Start))
+                && timeA.getText().length() > 0
+                && timeB.getText().length() > 0) {
             initialTimeA = Integer.parseInt(timeA.getText().toString());
             initialTimeB = Integer.parseInt(timeB.getText().toString());
 
