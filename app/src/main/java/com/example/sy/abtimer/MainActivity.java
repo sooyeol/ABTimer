@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     SharedPreferences sharedPreferences;
 
 
-    private void saveData(String key, long value){
+    private void saveData(String key, long value) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putLong(key, value);
         editor.apply();
@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .setCategory(NotificationCompat.CATEGORY_ALARM)
                 .setSound(alarmSound)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-                .setLights(Color.GRAY,200, 200)
+                .setLights(Color.GRAY, 200, 200)
                 .setAutoCancel(true);
 
         notificationManagerCompat = NotificationManagerCompat.from(this);
@@ -115,8 +115,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void loadSavedData() {
-        long timeAData = sharedPreferences.getLong("timeA",0);
-        long timeBData = sharedPreferences.getLong("timeB",0);
+        long timeAData = sharedPreferences.getLong("timeA", 0);
+        long timeBData = sharedPreferences.getLong("timeB", 0);
 
         timeA.setText(String.format(Locale.US, "%d", timeAData));
         timeB.setText(String.format(Locale.US, "%d", timeBData));
@@ -163,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 timerHandlerA.removeCallbacks(this);
 
                 timeA.setText(String.format(Locale.US, "%d", 0));
-                buttonA.setText(getText(R.string.Done));
+                buttonA.setText(getText(R.string.ADone));
 
                 notificationManagerCompat.notify(0, builder.build());
             }
@@ -185,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 timerHandlerB.removeCallbacks(this);
 
                 timeB.setText(String.format(Locale.US, "%d", 0));
-                buttonB.setText(getText(R.string.Done));
+                buttonA.setText(getText(R.string.BDone));
 
                 notificationManagerCompat.notify(0, builder.build());
             }
@@ -215,34 +215,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             initialTimeA = Integer.parseInt(timeA.getText().toString());
             initialTimeB = Integer.parseInt(timeB.getText().toString());
 
-            buttonA.setText(getString(R.string.Reset));
+            buttonA.setText(getString(R.string.ARunning));
 
             startTimerA();
-        } else if (buttonA.getText().equals(getText(R.string.Reset))) {
-            buttonA.setText(getString(R.string.Start));
-            stopTimerA();
-        } else {
+        } else if (buttonA.getText().equals(getText(R.string.ADone))) {
             timeA.setText(String.format(Locale.US, "%d", initialTimeA));
-            buttonA.setText(getString(R.string.Start));
+            buttonA.setText(getString(R.string.BRunning));
             startTimerB();
+        } else if (buttonA.getText().equals(getText(R.string.BDone))) {
+            timeB.setText(String.format(Locale.US, "%d", initialTimeA));
+            buttonA.setText(getString(R.string.ARunning));
+            startTimerA();
         }
     }
 
     private void onButtonBClick() {
-        if (buttonB.getText().equals(getText(R.string.Start))) {
-            initialTimeA = Integer.parseInt(timeA.getText().toString());
-            initialTimeB = Integer.parseInt(timeB.getText().toString());
-
-            buttonB.setText(getString(R.string.Reset));
-            startTimerB();
-        } else if (buttonB.getText().equals(getText(R.string.Reset))) {
-            buttonB.setText(getString(R.string.Start));
-            stopTimerB();
-        } else {
-            timeB.setText(String.format(Locale.US, "%d", initialTimeB));
-            buttonB.setText(getString(R.string.Start));
-            startTimerA();
-        }
+        timeA.setText(String.format(Locale.US, "%d", initialTimeA));
+        timeB.setText(String.format(Locale.US, "%d", initialTimeB));
+        buttonA.setText(getString(R.string.Start));
+        stopTimerA();
+        stopTimerB();
     }
 
     public void onClick(View v) {
