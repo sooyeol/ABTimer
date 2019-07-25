@@ -32,6 +32,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     int initialTimeA;
     int initialTimeB;
 
+    boolean justStarted = false;
+
     Button buttonA;
     Button buttonB;
 
@@ -149,20 +151,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Runnable timerRunnableA = new Runnable() {
         @Override
         public void run() {
-            String inputTextA = timeA.getText().toString();
-            Integer hoursA = Integer.parseInt(inputTextA) - 1;
-
-            if (hoursA > 0) {
-                timeA.setText(String.format(Locale.US, "%d", hoursA));
-
+            if (justStarted) {
+                justStarted = false;
                 timerHandlerA.postDelayed(this, 1000);
             } else {
-                timerHandlerA.removeCallbacks(this);
+                String inputTextA = timeA.getText().toString();
+                Integer hoursA = Integer.parseInt(inputTextA) - 1;
+                timeA.setText(String.format(Locale.US, "%d", hoursA));
 
-                timeA.setText(String.format(Locale.US, "%d", 0));
-                buttonA.setText(getText(R.string.ADone));
-
-                notificationManagerCompat.notify(0, builder.build());
+                if (hoursA > 0) {
+                    timerHandlerA.postDelayed(this, 1000);
+                } else {
+                    timerHandlerA.removeCallbacks(this);
+                    buttonA.setText(getText(R.string.ADone));
+                    notificationManagerCompat.notify(0, builder.build());
+                }
             }
         }
     };
@@ -171,29 +174,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Runnable timerRunnableB = new Runnable() {
         @Override
         public void run() {
-            String inputTextB = timeB.getText().toString();
-            Integer hoursB = Integer.parseInt(inputTextB) - 1;
-
-            if (hoursB > 0) {
-                timeB.setText(String.format(Locale.US, "%d", hoursB));
-
+            if (justStarted) {
+                justStarted = false;
                 timerHandlerB.postDelayed(this, 1000);
             } else {
-                timerHandlerB.removeCallbacks(this);
+                String inputTextB = timeB.getText().toString();
+                Integer hoursB = Integer.parseInt(inputTextB) - 1;
+                timeB.setText(String.format(Locale.US, "%d", hoursB));
 
-                timeB.setText(String.format(Locale.US, "%d", 0));
-                buttonA.setText(getText(R.string.BDone));
-
-                notificationManagerCompat.notify(0, builder.build());
+                if (hoursB > 0) {
+                    timerHandlerB.postDelayed(this, 1000);
+                } else {
+                    timerHandlerB.removeCallbacks(this);
+                    buttonA.setText(getText(R.string.BDone));
+                    notificationManagerCompat.notify(0, builder.build());
+                }
             }
         }
     };
 
     private void startTimerA() {
+        justStarted = true;
         timerRunnableA.run();
     }
 
     private void startTimerB() {
+        justStarted = true;
         timerRunnableB.run();
     }
 
